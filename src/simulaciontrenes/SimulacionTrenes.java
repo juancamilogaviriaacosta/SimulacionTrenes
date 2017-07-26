@@ -23,16 +23,16 @@ public class SimulacionTrenes {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    for (;;) {
-                        try {
+                    try {
+                        while (!llegaronTodosLosTrenes(tm.getTrenes())) {
                             for (Tren t : tm.getTrenes()) {
                                 siguienteParada(tm.getEstaciones(), t);
-                                System.out.println(t);
+                                System.out.println(t.getId() + ": " + t.getEstacionActual() + "\n");
                             }
                             Thread.sleep(2000);
-                        } catch (Exception e) {
-                            e.printStackTrace();
                         }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 }
             }).start();
@@ -116,24 +116,34 @@ public class SimulacionTrenes {
         return null;
     }
 
+    private boolean llegaronTodosLosTrenes(List<Tren> trenes) {
+        for (Tren t : trenes) {
+            if (t.getEstacionActual() == null) {
+                return false;
+            } else if (!t.getEstacionActual().equals(t.getEstacionDestino())) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public void siguienteParada(List<Estacion> estaciones, Tren tren) {
-        if (tren.getEstacionOrigen().getOrden() > tren.getEstacionDestino().getOrden()) {
-            if (tren.getEstacionActual() == null) {
-                tren.setEstacionActual(estaciones.get(0));
-            } else {
-                for (int i = 0; i < estaciones.size(); i++) {
-                    if (estaciones.get(i).equals(tren.getEstacionActual())) {
-                        tren.setEstacionActual(estaciones.get(i + 1));
+        if (tren.getEstacionActual() == null) {
+            tren.setEstacionActual(tren.getEstacionOrigen());
+        } else if (!tren.getEstacionActual().equals(tren.getEstacionDestino())) {
+            if (tren.getEstacionOrigen().getOrden() > tren.getEstacionDestino().getOrden()) {
+                for (int i = estaciones.size() - 1; i >= 0; i--) {
+                    Estacion e = estaciones.get(i);
+                    if (e.getOrden() < tren.getEstacionActual().getOrden()) {
+                        tren.setEstacionActual(e);
+                        break;
                     }
                 }
-            }
-        } else if (tren.getEstacionOrigen().getOrden() < tren.getEstacionDestino().getOrden()) {
-            if (tren.getEstacionActual() == null) {
-                tren.setEstacionActual(estaciones.get(estaciones.size()-1));
             } else {
-                for (int i = 0; i < estaciones.size(); i++) {
-                    if (estaciones.get(i).equals(tren.getEstacionActual())) {
-                        tren.setEstacionActual(estaciones.get(i - 1));
+                for (Estacion e : estaciones) {
+                    if (e.getOrden() > tren.getEstacionActual().getOrden()) {
+                        tren.setEstacionActual(e);
+                        break;
                     }
                 }
             }
