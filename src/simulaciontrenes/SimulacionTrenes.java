@@ -20,7 +20,7 @@ public class SimulacionTrenes {
         st.simular();
     }
 
-    private void simular() {
+    public void simular() {
         Transmimetro tm = cargarArchivos();
 
         //Hilo para mover los trenes
@@ -208,7 +208,7 @@ public class SimulacionTrenes {
         return null;
     }
 
-    private boolean llegaronTodosLosTrenes(List<Tren> trenes) {
+    public boolean llegaronTodosLosTrenes(List<Tren> trenes) {
         for (Tren t : trenes) {
             if (t.getEstacionActual() == null) {
                 return false;
@@ -242,7 +242,7 @@ public class SimulacionTrenes {
         }
     }
 
-    private void imprimir(Transmimetro tm) {
+    public void imprimir(Transmimetro tm) {
         System.out.println("\n\n----------Informe " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + "----------");
         for (Estacion tmp : tm.getEstaciones()) {
             System.out.println("Pasajeros en " + tmp.getNombre() + ": " + tmp.getPasajeros().size());
