@@ -1,19 +1,23 @@
 package simulaciontrenes;
 
+import java.util.List;
+
 /**
  *
  * @author juan
  */
 public class Tren {
+
     private Integer id;
     private String horaSalida;
     private Estacion estacionOrigen;
     private Estacion estacionDestino;
     private Estacion estacionActual;
+    private List<Pasajero> pasajeros;
 
     @Override
     public String toString() {
-        return "Tren{" + "id=" + id + ", horaSalida=" + horaSalida + ", estacionOrigen=" + estacionOrigen + ", estacionDestino=" + estacionDestino + ", estacionActual=" + estacionActual + '}';
+        return "Tren{" + "id=" + id + ", horaSalida=" + horaSalida + ", estacionOrigen=" + estacionOrigen + ", estacionDestino=" + estacionDestino + ", estacionActual=" + estacionActual + ", pasajeros=" + pasajeros + '}';
     }
 
     public Integer getId() {
@@ -54,5 +58,15 @@ public class Tren {
 
     public void setEstacionActual(Estacion estacionActual) {
         this.estacionActual = estacionActual;
-    }   
+    }
+
+    public List<Pasajero> getPasajeros() {
+        return pasajeros;
+    }
+
+    public void setPasajeros(List<Pasajero> pasajeros) {
+        this.pasajeros = pasajeros;
+    }
+    
+    
 }
