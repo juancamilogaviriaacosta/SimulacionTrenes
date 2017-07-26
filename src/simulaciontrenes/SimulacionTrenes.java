@@ -34,6 +34,7 @@ public class SimulacionTrenes {
                         }
                         Thread.sleep(2000);
                     }
+                    imprimir(tm);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -48,21 +49,21 @@ public class SimulacionTrenes {
                     while (!llegaronTodosLosTrenes(tm.getTrenes())) {
                         for (Estacion e : tm.getEstaciones()) {
                             Integer numeroPasajerosEnEstacion = new Random().nextInt(tm.getPasajeros().size());
-                            List<Pasajero> pasajerosEstacion = new ArrayList<>();
-                            for (int i = 0; i < numeroPasajerosEnEstacion; i++) {
-                                pasajerosEstacion.add(tm.getPasajeros().get(i));
-                                tm.getPasajeros().remove(i);
+                            if (numeroPasajerosEnEstacion > 0) {
+                                List<Pasajero> pasajerosEstacion = tm.getPasajeros().subList(0, numeroPasajerosEnEstacion);
+                                e.getPasajeros().addAll(pasajerosEstacion);
+                                tm.getPasajeros().removeAll(pasajerosEstacion);
                             }
-                            e.getPasajeros().addAll(pasajerosEstacion);
                         }
                     }
+                    imprimir(tm);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         }).start();
 
-        //Hilo para que los pasajeros se suban a los trenes
+        //Hilo para que los pasajeros suban a los trenes
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -70,14 +71,38 @@ public class SimulacionTrenes {
                     while (!llegaronTodosLosTrenes(tm.getTrenes())) {
                         for (Estacion e : tm.getEstaciones()) {
                             for (Tren t : tm.getTrenes()) {
-                                if (t.getEstacionActual()!=null && t.getEstacionActual().equals(e) && !e.getPasajeros().isEmpty()) {
+                                if (t.getEstacionActual() != null && t.getEstacionActual().equals(e) && !e.getPasajeros().isEmpty()) {
                                     List<Pasajero> pasajerosTmp = e.getPasajeros();
                                     t.getPasajeros().addAll(pasajerosTmp);
                                     e.getPasajeros().removeAll(pasajerosTmp);
                                 }
+                                if (t.getEstacionActual() != null && t.getEstacionActual().equals(t.getEstacionDestino())) {
+                                    t.getPasajeros().removeAll(t.getPasajeros());
+                                }
                             }
                         }
                     }
+                    imprimir(tm);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+
+        //Hilo para que los pasajeros bajen de los trenes
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    while (!llegaronTodosLosTrenes(tm.getTrenes())) {
+                        for (Tren t : tm.getTrenes()) {
+                            if (new Random().nextBoolean() && !t.getPasajeros().isEmpty()) {
+                                t.getPasajeros().remove(0);
+                            }
+                        }
+                        Thread.sleep(3000);
+                    }
+                    imprimir(tm);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -90,16 +115,10 @@ public class SimulacionTrenes {
             public void run() {
                 try {
                     while (!llegaronTodosLosTrenes(tm.getTrenes())) {
-                        System.out.println("\n\n\n----------Informe " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + "----------");
-                        for (Estacion tmp : tm.getEstaciones()) {
-                            System.out.println("Numero de pasajeros en " + tmp.getNombre() + ": " + tmp.getPasajeros().size());
-                        }
-
-                        for (Tren tmp : tm.getTrenes()) {
-                            System.out.println("Tren numero: " + tmp.getId() + " se encuentra en: " + tmp.getEstacionActual().getNombre());
-                            System.out.println("Tren numero: " + tmp.getId() + " tiene " + tmp.getPasajeros().size() + " pasajeros");
-                        }
+                        imprimir(tm);
+                        Thread.sleep(500);
                     }
+                    imprimir(tm);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -220,6 +239,17 @@ public class SimulacionTrenes {
                     }
                 }
             }
+        }
+    }
+
+    private void imprimir(Transmimetro tm) {
+        System.out.println("\n\n----------Informe " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + "----------");
+        for (Estacion tmp : tm.getEstaciones()) {
+            System.out.println("Pasajeros en " + tmp.getNombre() + ": " + tmp.getPasajeros().size());
+        }
+
+        for (Tren tmp : tm.getTrenes()) {
+            System.out.println("Tren " + tmp.getId() + " esta en " + tmp.getEstacionActual().getNombre() + " con " + tmp.getPasajeros().size() + " pasajeros");
         }
     }
 }
