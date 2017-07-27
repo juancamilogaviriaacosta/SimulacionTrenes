@@ -73,7 +73,8 @@ public class SimulacionTrenes {
                         for (Estacion e : tm.getEstaciones()) {
                             for (Tren t : tm.getTrenes()) {
                                 if (t.getEstacionActual() != null && t.getEstacionActual().equals(e) && !e.getPasajeros().isEmpty()) {
-                                    List<Pasajero> pasajerosTmp = e.getPasajeros();
+                                    int numeroPasajerosSuben = (e.getPasajeros().size() <= (t.getCapacidadPasajeros() - t.getPasajeros().size()) ? e.getPasajeros().size() : t.getCapacidadPasajeros() - e.getPasajeros().size());
+                                    List<Pasajero> pasajerosTmp = e.getPasajeros().subList(0, numeroPasajerosSuben);
                                     t.getPasajeros().addAll(pasajerosTmp);
                                     e.getPasajeros().removeAll(pasajerosTmp);
                                 }

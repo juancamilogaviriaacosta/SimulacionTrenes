@@ -15,11 +15,10 @@ public class Tren {
     private Estacion estacionActual;
     private List<Pasajero> pasajeros;
     private Integer capacidadPasajeros;
-    private Integer numeroActualPasajeros;
 
     @Override
     public String toString() {
-        return "Tren{" + "id=" + id + ", horaSalida=" + horaSalida + ", estacionOrigen=" + estacionOrigen + ", estacionDestino=" + estacionDestino + ", estacionActual=" + estacionActual + ", pasajeros=" + pasajeros + ", capacidadPasajeros=" + capacidadPasajeros + ", numeroActualPasajeros=" + numeroActualPasajeros + '}';
+        return "Tren{" + "id=" + id + ", horaSalida=" + horaSalida + ", estacionOrigen=" + estacionOrigen + ", estacionDestino=" + estacionDestino + ", estacionActual=" + estacionActual + ", pasajeros=" + pasajeros + ", capacidadPasajeros=" + capacidadPasajeros + '}';
     }
 
     public Integer getId() {
@@ -76,13 +75,5 @@ public class Tren {
 
     public void setCapacidadPasajeros(Integer capacidadPasajeros) {
         this.capacidadPasajeros = capacidadPasajeros;
-    }
-
-    public Integer getNumeroActualPasajeros() {
-        return numeroActualPasajeros;
-    }
-
-    public void setNumeroActualPasajeros(Integer numeroActualPasajeros) {
-        this.numeroActualPasajeros = numeroActualPasajeros;
     }
 }
