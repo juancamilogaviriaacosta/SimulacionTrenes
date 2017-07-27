@@ -52,6 +52,7 @@ public class SimulacionTrenes {
                             if (numeroPasajerosEnEstacion > 0) {
                                 List<Pasajero> pasajerosEstacion = tm.getPasajeros().subList(0, numeroPasajerosEnEstacion);
                                 e.getPasajeros().addAll(pasajerosEstacion);
+                                e.setNumeroIngresos(e.getNumeroIngresos() + numeroPasajerosEnEstacion);
                                 tm.getPasajeros().removeAll(pasajerosEstacion);
                             }
                         }
@@ -76,9 +77,6 @@ public class SimulacionTrenes {
                                     t.getPasajeros().addAll(pasajerosTmp);
                                     e.getPasajeros().removeAll(pasajerosTmp);
                                 }
-                                if (t.getEstacionActual() != null && t.getEstacionActual().equals(t.getEstacionDestino())) {
-                                    t.getPasajeros().removeAll(t.getPasajeros());
-                                }
                             }
                         }
                     }
@@ -98,9 +96,14 @@ public class SimulacionTrenes {
                         for (Tren t : tm.getTrenes()) {
                             if (new Random().nextBoolean() && !t.getPasajeros().isEmpty()) {
                                 t.getPasajeros().remove(0);
+                                t.getEstacionActual().setNumeroSalidas(t.getEstacionActual().getNumeroSalidas() + 1);
+                            }
+                            if (t.getEstacionActual() != null && t.getEstacionActual().equals(t.getEstacionDestino())) {
+                                t.getEstacionActual().setNumeroSalidas(t.getEstacionActual().getNumeroSalidas() + t.getPasajeros().size());
+                                t.getPasajeros().removeAll(t.getPasajeros());
                             }
                         }
-                        Thread.sleep(3000);
+                        //Thread.sleep(3000);
                     }
                     imprimir(tm);
                 } catch (Exception e) {
@@ -140,11 +143,14 @@ public class SimulacionTrenes {
             File archivoEstaciones = new File(paquete + File.separator + "archivoEstaciones.csv");
             FileReader fr1 = new FileReader(archivoEstaciones);
             BufferedReader br1 = new BufferedReader(fr1);
-            String linea1 = br1.readLine();
+            String linea1;
+            br1.readLine();
             int contador = 0;
             while ((linea1 = br1.readLine()) != null) {
                 String[] lineaSplit = linea1.split(";");
                 Estacion tmp = new Estacion();
+                tmp.setNumeroIngresos(0);
+                tmp.setNumeroSalidas(0);
                 tmp.setNombre(lineaSplit[0]);
                 tmp.setOrden(contador++);
                 tmp.setPasajeros(new ArrayList<>());
@@ -156,7 +162,8 @@ public class SimulacionTrenes {
             File archivoTrenes = new File(paquete + File.separator + "archivoTrenes.csv");
             FileReader fr2 = new FileReader(archivoTrenes);
             BufferedReader br2 = new BufferedReader(fr2);
-            String linea2 = br2.readLine();
+            String linea2;
+            br2.readLine();
             while ((linea2 = br2.readLine()) != null) {
                 String[] lineaSplit = linea2.split(";");
                 Tren tmp = new Tren();
@@ -164,6 +171,7 @@ public class SimulacionTrenes {
                 tmp.setEstacionOrigen(buscarEstacion(tm.getEstaciones(), lineaSplit[1]));
                 tmp.setHoraSalida(lineaSplit[2]);
                 tmp.setEstacionDestino(buscarEstacion(tm.getEstaciones(), lineaSplit[3]));
+                tmp.setCapacidadPasajeros(Integer.valueOf(lineaSplit[4]));
                 tmp.setPasajeros(new ArrayList<>());
                 tm.getTrenes().add(tmp);
             }
@@ -173,7 +181,8 @@ public class SimulacionTrenes {
             File archivoPasajeros = new File(paquete + File.separator + "archivoPasajeros.csv");
             FileReader fr3 = new FileReader(archivoPasajeros);
             BufferedReader br3 = new BufferedReader(fr3);
-            String linea3 = br3.readLine();
+            String linea3;
+            br3.readLine();
             while ((linea3 = br3.readLine()) != null) {
                 String[] lineaSplit = linea3.split(";");
                 Pasajero tmp = new Pasajero();
@@ -242,10 +251,10 @@ public class SimulacionTrenes {
         }
     }
 
-    public void imprimir(Transmimetro tm) {
+    public synchronized void imprimir(Transmimetro tm) {
         System.out.println("\n\n----------Informe " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + "----------");
         for (Estacion tmp : tm.getEstaciones()) {
-            System.out.println("Pasajeros en " + tmp.getNombre() + ": " + tmp.getPasajeros().size());
+            System.out.println("Estacion " + tmp.getNombre() + ": pasajeros actual " + tmp.getPasajeros().size() + ", total ingresos: " + tmp.getNumeroIngresos() + ", total salidas: " + tmp.getNumeroSalidas());
         }
 
         for (Tren tmp : tm.getTrenes()) {

@@ -11,10 +11,12 @@ public class Estacion {
     private String nombre;
     private Integer orden;
     private List<Pasajero> pasajeros;
+    private Integer numeroIngresos;
+    private Integer numeroSalidas;
 
     @Override
     public String toString() {
-        return "Estacion{" + "nombre=" + nombre + ", orden=" + orden + ", pasajeros=" + pasajeros + '}';
+        return "Estacion{" + "nombre=" + nombre + ", orden=" + orden + ", pasajeros=" + pasajeros + ", numeroIngresos=" + numeroIngresos + ", numeroSalidas=" + numeroSalidas + '}';
     }
 
     public String getNombre() {
@@ -39,5 +41,21 @@ public class Estacion {
 
     public void setPasajeros(List<Pasajero> pasajeros) {
         this.pasajeros = pasajeros;
+    }
+
+    public Integer getNumeroIngresos() {
+        return numeroIngresos;
+    }
+
+    public void setNumeroIngresos(Integer numeroIngresos) {
+        this.numeroIngresos = numeroIngresos;
+    }
+
+    public Integer getNumeroSalidas() {
+        return numeroSalidas;
+    }
+
+    public void setNumeroSalidas(Integer numeroSalidas) {
+        this.numeroSalidas = numeroSalidas;
     }
 }
